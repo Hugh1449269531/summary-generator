@@ -1,0 +1,2551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="沟通总结">
+    <meta name="description" content="快速选配内容，一键生成专业沟通总结">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%23667eea' width='192' height='192' rx='20'/%3E%3Ctext x='96' y='120' font-size='80' text-anchor='middle' fill='white'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E">
+    <title>沟通总结生成软件</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        h4 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #4a5568;
+            border-left: 4px solid #667eea;
+            padding-left: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: #718096;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab:hover {
+            color: #4a5568;
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .form-col {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        input[type="date"],
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #38a169;
+        }
+        
+        .btn-danger {
+            background: #fc8181;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #f56565;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .section {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #667eea;
+        }
+        
+        .checkbox-item.selected {
+            background: #ebf4ff;
+            border-color: #667eea;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+        }
+        
+        .add-item {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .add-item input {
+            flex: 1;
+        }
+        
+        .custom-items {
+            margin-top: 10px;
+        }
+        
+        .custom-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+        
+        .custom-item span {
+            flex: 1;
+        }
+        
+        .company-select-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .company-select-wrapper .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .summary-output {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            white-space: pre-wrap;
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        
+        .history-list {
+            margin-top: 20px;
+        }
+        
+        .history-item {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .history-title {
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .history-date {
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .history-preview {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .history-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .company-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: #f0f4ff;
+            border: 1px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .company-name {
+            flex: 1;
+            font-weight: 600;
+            color: #667eea;
+            min-width: 100px;
+        }
+        
+        .company-contacts {
+            color: #718096;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        
+        .company-item .btn {
+            white-space: nowrap;
+        }
+        
+        .category-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            border: 1px solid #c3dafe;
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 16px;
+        }
+        
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .category-item .category-title {
+            flex: 1;
+            font-weight: 500;
+            color: #4a5568;
+            min-width: 100px;
+        }
+        
+        .category-item .content-count {
+            color: #718096;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        
+        .category-item .btn {
+            white-space: nowrap;
+        }
+        
+        .content-category {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .content-category h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .category-tab {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            cursor: pointer;
+            background: white;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .category-tab:hover {
+            border-color: #667eea;
+        }
+        
+        .category-tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            h3 {
+                font-size: 1.1rem;
+            }
+            
+            .tab {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-col {
+                min-width: 100%;
+            }
+            
+            .checkbox-group {
+                flex-direction: column;
+            }
+            
+            .checkbox-item {
+                width: 100%;
+                padding: 12px;
+            }
+            
+            .company-select-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 12px 16px;
+                font-size: 16px;
+                min-height: 44px;
+            }
+            
+            .add-item {
+                flex-direction: column;
+            }
+            
+            .add-item input {
+                width: 100%;
+            }
+            
+            .add-item .btn {
+                width: 100%;
+            }
+            
+            .category-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .category-tab {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .history-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .history-actions {
+                flex-wrap: wrap;
+            }
+            
+            .category-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .category-item .btn {
+                width: 100%;
+                margin-top: 5px;
+            }
+            
+            .company-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .company-item .btn {
+                width: 100%;
+                margin-top: 5px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .button-group .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 沟通总结生成软件</h1>
+            <p>快速选配内容，一键生成专业沟通总结</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('generate')">✍️ 生成总结</button>
+            <button class="tab" onclick="switchTab('history')">📋 历史记录</button>
+            <button class="tab" onclick="switchTab('settings')">⚙️ 模板管理</button>
+        </div>
+        
+        <!-- 生成总结 -->
+        <div id="generate" class="tab-content active">
+            <h2>生成沟通总结</h2>
+            
+            <div class="section">
+                <h3>📅 基本信息</h3>
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="company-select-wrapper">
+                            <div class="form-group">
+                                <label for="companySelect">选择公司</label>
+                                <select id="companySelect" onchange="onCompanyChange()">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="meetingDate">沟通日期</label>
+                            <input type="date" id="meetingDate">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>👥 沟通对象</h3>
+                <div class="checkbox-group" id="contactCheckboxes"></div>
+                <div class="add-item">
+                    <input type="text" id="newContact" placeholder="添加新的沟通对象">
+                    <button class="btn btn-secondary" onclick="addContact()">添加</button>
+                </div>
+                <div class="custom-items" id="customContacts"></div>
+            </div>
+            
+            <div class="section">
+                <h3>📋 沟通内容</h3>
+                <div class="category-tabs" id="contentCategoryTabs"></div>
+                <div id="contentCheckboxesContainer"></div>
+                <div class="add-item">
+                    <input type="text" id="newContent" placeholder="添加新的沟通内容">
+                    <button class="btn btn-secondary" onclick="addContent()">添加</button>
+                </div>
+                <div class="custom-items" id="customContents"></div>
+            </div>
+            
+            <div class="section">
+                <h3>⚠️ 注意事项</h3>
+                <div class="tabs" id="noteCategoryTabs"></div>
+                <div class="checkbox-group" id="noteCheckboxes"></div>
+                <div class="add-item">
+                    <input type="text" id="newNote" placeholder="添加新的注意事项">
+                    <button class="btn btn-secondary" onclick="addNote()">添加</button>
+                </div>
+                <div class="custom-items" id="customNotes"></div>
+            </div>
+            
+            <div class="section">
+                <h3>📋 下一步计划</h3>
+                <div class="tabs" id="planCategoryTabs"></div>
+                <div class="checkbox-group" id="planCheckboxes"></div>
+                <div class="add-item">
+                    <input type="text" id="newPlan" placeholder="添加新的计划">
+                    <button class="btn btn-secondary" onclick="addPlan()">添加</button>
+                </div>
+                <div class="custom-items" id="customPlans"></div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="generateSummary()">📄 生成总结</button>
+                <button class="btn btn-secondary" onclick="resetForm()">🔄 重置表单</button>
+            </div>
+            
+            <div class="section" style="margin-top: 20px;">
+                <h3>📝 生成的总结</h3>
+                <div class="summary-output" id="summaryOutput">请先填写信息并点击"生成总结"按钮...</div>
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="copySummary()" style="margin-top: 15px;">📋 复制到剪贴板</button>
+                    <button class="btn btn-primary" onclick="saveSummary()" style="margin-top: 15px;" id="saveButton">💾 保存到历史</button>
+                    <button class="btn btn-secondary" onclick="cancelEdit()" style="margin-top: 15px; display: none;" id="cancelEditButton">❌ 取消编辑</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 历史记录 -->
+        <div id="history" class="tab-content">
+            <h2>历史记录</h2>
+            
+            <div class="section">
+                <h3>🔍 筛选条件</h3>
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="filterCompany">公司</label>
+                            <select id="filterCompany">
+                                <option value="">全部公司</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="filterStartDate">开始日期</label>
+                            <input type="date" id="filterStartDate">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="filterEndDate">结束日期</label>
+                            <input type="date" id="filterEndDate">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="filterContent">沟通内容（模糊搜索）</label>
+                            <input type="text" id="filterContent" placeholder="输入关键词搜索沟通内容">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="filterNotes">注意事项（模糊搜索）</label>
+                            <input type="text" id="filterNotes" placeholder="输入关键词搜索注意事项">
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="applyFilters()">🔍 应用筛选</button>
+                    <button class="btn btn-secondary" onclick="resetFilters()">🔄 重置筛选</button>
+                    <button class="btn btn-danger" onclick="clearHistory()">🗑️ 清空所有记录</button>
+                </div>
+            </div>
+            
+            <div class="history-list" id="historyList"></div>
+        </div>
+        
+        <!-- 模板管理 -->
+        <div id="settings" class="tab-content">
+            <h2>模板管理</h2>
+            
+            <div class="section">
+                <h3>🏢 公司管理</h3>
+                <div id="companyList"></div>
+                <div class="add-item">
+                    <input type="text" id="newCompanyInput" placeholder="输入新公司名称">
+                    <button class="btn btn-primary" onclick="addCompany()">添加公司</button>
+                </div>
+            </div>
+            
+            <div class="section" id="companySettings" style="display: none;">
+                <h3>🔧 当前公司设置</h3>
+                <div class="form-group">
+                    <label>公司名称</label>
+                    <input type="text" id="editCompanyName" placeholder="公司名称">
+                </div>
+                
+                <div class="form-group">
+                    <label>沟通对象（每行一个）</label>
+                    <textarea id="editCompanyContacts" placeholder="周总&#10;廖总&#10;小马"></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="saveCompanySettings()">保存公司设置</button>
+                    <button class="btn btn-danger" onclick="deleteCurrentCompany()">删除此公司</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>📋 沟通内容分类管理</h3>
+                <div id="contentCategoryList"></div>
+                <div class="add-item">
+                    <input type="text" id="newCategoryInput" placeholder="输入新分类名称">
+                    <button class="btn btn-primary" onclick="addContentCategory()">添加分类</button>
+                </div>
+            </div>
+            
+            <div class="section" id="categorySettings" style="display: none;">
+                <h3>🔧 当前分类设置</h3>
+                <div class="form-group">
+                    <label>分类名称</label>
+                    <input type="text" id="editCategoryName" placeholder="分类名称">
+                </div>
+                
+                <div class="form-group">
+                    <label>沟通内容（每行一个）</label>
+                    <textarea id="editCategoryContents" placeholder="内容1&#10;内容2&#10;内容3"></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="saveCategorySettings()">保存分类设置</button>
+                    <button class="btn btn-danger" onclick="deleteCurrentCategory()">删除此分类</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>⚠️ 注意事项分类管理</h3>
+                <div id="noteCategoryList"></div>
+                <div class="add-item">
+                    <input type="text" id="newNoteCategoryInput" placeholder="输入新分类名称">
+                    <button class="btn btn-primary" onclick="addNoteCategory()">添加分类</button>
+                </div>
+            </div>
+            
+            <div class="section" id="noteCategorySettings" style="display: none;">
+                <h3>🔧 当前注意事项分类设置</h3>
+                <div class="form-group">
+                    <label>分类名称</label>
+                    <input type="text" id="editNoteCategoryName" placeholder="分类名称">
+                </div>
+                
+                <div class="form-group">
+                    <label>注意事项（每行一个）</label>
+                    <textarea id="editNoteCategoryContents" placeholder="注意事项1&#10;注意事项2&#10;注意事项3"></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="saveNoteCategorySettings()">保存分类设置</button>
+                    <button class="btn btn-danger" onclick="deleteCurrentNoteCategory()">删除此分类</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>📋 下一步计划分类管理</h3>
+                <div id="planCategoryList"></div>
+                <div class="add-item">
+                    <input type="text" id="newPlanCategoryInput" placeholder="输入新分类名称">
+                    <button class="btn btn-primary" onclick="addPlanCategory()">添加分类</button>
+                </div>
+            </div>
+            
+            <div class="section" id="planCategorySettings" style="display: none;">
+                <h3>🔧 当前计划分类设置</h3>
+                <div class="form-group">
+                    <label>分类名称</label>
+                    <input type="text" id="editPlanCategoryName" placeholder="分类名称">
+                </div>
+                
+                <div class="form-group">
+                    <label>计划内容（每行一个）</label>
+                    <textarea id="editPlanCategoryContents" placeholder="计划1&#10;计划2&#10;计划3"></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="savePlanCategorySettings()">保存分类设置</button>
+                    <button class="btn btn-danger" onclick="deleteCurrentPlanCategory()">删除此分类</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>💾 数据备份与恢复</h3>
+                <div class="form-group">
+                    <label>导出数据（备份）</label>
+                    <p style="color: #718096; font-size: 13px; margin: 5px 0;">将所有预设模板和历史记录导出为JSON文件</p>
+                    <button class="btn btn-success" onclick="exportData()">📥 导出数据</button>
+                </div>
+                
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>导出表格（历史记录）</label>
+                    <p style="color: #718096; font-size: 13px; margin: 5px 0;">将所有历史记录导出为表格格式（CSV）</p>
+                    <button class="btn btn-info" onclick="exportHistoryAsTable()">📊 导出表格</button>
+                </div>
+                
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>导入数据（恢复）</label>
+                    <p style="color: #718096; font-size: 13px; margin: 5px 0;">选择之前导出的JSON文件恢复数据</p>
+                    <input type="file" id="importFile" accept=".json" style="margin-bottom: 10px;">
+                    <button class="btn btn-primary" onclick="importData()">📤 导入数据</button>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="resetPresets()">🔄 恢复默认预设</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let data = {
+            companies: [
+                {
+                    name: 'xxx家具',
+                    contacts: ['周总', '廖总', '小马', '财务']
+                },
+                {
+                    name: 'ABC建材',
+                    contacts: ['李总', '王经理', '张工', '刘会计']
+                }
+            ],
+            contentCategories: [
+                {
+                    name: '销售',
+                    items: ['销售出库问题处理', '订单跟进', '价格调整讨论', '客户投诉处理']
+                },
+                {
+                    name: '采购',
+                    items: ['采购流程沟通', '供应商对接', '采购价格谈判', '采购订单跟进']
+                },
+                {
+                    name: '仓库',
+                    items: ['库存盘点', '出入库流程', '库存预警设置', '仓库布局调整']
+                },
+                {
+                    name: '财务',
+                    items: ['财务报表核对', '付款审批流程', '费用报销规范', '成本核算']
+                },
+                {
+                    name: '会计',
+                    items: ['账务处理规范', '凭证录入', '科目设置', '月末结账']
+                },
+                {
+                    name: '生产',
+                    items: ['生产流程沟通', '生产设置调整', '生产计划安排', '产能分析']
+                },
+                {
+                    name: '条码',
+                    items: ['条码打印模板调整', '扫码流程培训', '条码规则设置', '标签设计']
+                },
+                {
+                    name: '系统',
+                    items: ['系统功能培训', '权限设置', '数据备份', '系统升级']
+                },
+                {
+                    name: '其他',
+                    items: ['培训新文员生产下单操作', '白胚资料建立讲解', '质量问题反馈', '其他事项']
+                }
+            ],
+            noteCategories: [
+                {
+                    name: '常见',
+                    items: [
+                        '下生产时需要注意床边尾木架白胚单独下生产走一条线，会备货，生成方式是按单品',
+                        '目前车位的床边尾，床头柜的单价是与床头合在一起了，建议后面需要单独出单价来，方便核算和管理',
+                        '交货日期需要提前3天确认'
+                    ]
+                },
+                {
+                    name: '特殊',
+                    items: [
+                        '特殊规格需要提前报备',
+                        '定制产品需要确认图纸',
+                        '特殊材质需要额外确认'
+                    ]
+                },
+                {
+                    name: '要求',
+                    items: [
+                        '所有产品需要经过质检',
+                        '包装需要符合运输要求',
+                        '交付时需要提供相关证明文件'
+                    ]
+                }
+            ],
+            planCategories: [
+                {
+                    name: '短期',
+                    items: [
+                        '完成生产流程优化',
+                        '更新系统权限设置',
+                        '培训新员工'
+                    ]
+                },
+                {
+                    name: '中期',
+                    items: [
+                        '实施新的质检标准',
+                        '优化仓库管理流程',
+                        '升级系统功能'
+                    ]
+                },
+                {
+                    name: '长期',
+                    items: [
+                        '建立完整的管理体系',
+                        '扩大生产规模',
+                        '开发新产品线'
+                    ]
+                }
+            ],
+            history: [],
+            selected: {
+                contacts: [],
+                contents: [],
+                notes: [],
+                plans: []
+            },
+            custom: {
+                contacts: [],
+                contents: [],
+                notes: [],
+                plans: []
+            },
+            currentEditingCompany: null,
+            currentEditingCategory: null,
+            currentContentCategory: 0,
+            currentEditingNoteCategory: null,
+            currentNoteCategory: 0,
+            currentEditingPlanCategory: null,
+            currentPlanCategory: 0,
+            editingHistoryId: null
+        };
+        
+        function init() {
+            loadData();
+            setDefaultDate();
+            renderCompanySelect();
+            renderFilterCompanySelect();
+            renderCheckboxes();
+            renderHistory();
+            renderCompanyList();
+            renderContentCategories();
+            renderContentCategoryTabs();
+            renderNoteCategoryList();
+            renderNoteCategoryTabs();
+            renderPlanCategoryList();
+            renderPlanCategoryTabs();
+            updateSaveButton();
+        }
+        
+        function loadData() {
+            const saved = localStorage.getItem('summaryGeneratorData');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                data.companies = parsed.companies || data.companies;
+                data.contentCategories = parsed.contentCategories || data.contentCategories;
+                data.noteCategories = parsed.noteCategories || data.noteCategories;
+                data.planCategories = parsed.planCategories || data.planCategories;
+                data.history = parsed.history || [];
+            }
+        }
+        
+        function saveData() {
+            localStorage.setItem('summaryGeneratorData', JSON.stringify({
+                companies: data.companies,
+                contentCategories: data.contentCategories,
+                noteCategories: data.noteCategories,
+                planCategories: data.planCategories,
+                history: data.history
+            }));
+        }
+        
+        function setDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('meetingDate').value = today;
+        }
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function renderCompanySelect() {
+            const select = document.getElementById('companySelect');
+            select.innerHTML = data.companies.map((company, index) => 
+                `<option value="${index}">${company.name}</option>`
+            ).join('');
+        }
+        
+        function onCompanyChange() {
+            data.selected = { contacts: [], contents: [], notes: [] };
+            data.custom = { contacts: [], contents: [], notes: [] };
+            renderCheckboxes();
+        }
+        
+        function getCurrentCompany() {
+            const index = document.getElementById('companySelect').value;
+            return data.companies[index];
+        }
+        
+        function renderCheckboxes() {
+            renderContactCheckboxes();
+            renderContentCheckboxes();
+            renderNoteCategoryTabs();
+            renderNoteCheckboxes();
+            renderPlanCategoryTabs();
+            renderPlanCheckboxes();
+            updateAllCheckboxStyles();
+        }
+        
+        function updateAllCheckboxStyles() {
+            data.selected.contacts.forEach(idx => {
+                const checkbox = document.getElementById(`contact-${idx}`);
+                if (checkbox) {
+                    checkbox.closest('.checkbox-item').classList.add('selected');
+                }
+            });
+            
+            data.selected.contents.forEach(idx => {
+                const checkbox = document.getElementById(`content-${idx}`);
+                if (checkbox) {
+                    checkbox.closest('.checkbox-item').classList.add('selected');
+                }
+            });
+            
+            data.selected.notes.forEach(note => {
+                data.noteCategories.forEach((cat, catIdx) => {
+                    const itemIdx = cat.items.indexOf(note);
+                    if (itemIdx !== -1) {
+                        const checkbox = document.getElementById(`note-${catIdx}-${itemIdx}`);
+                        if (checkbox) {
+                            checkbox.closest('.checkbox-item').classList.add('selected');
+                        }
+                    }
+                });
+            });
+            
+            data.selected.plans.forEach(plan => {
+                data.planCategories.forEach((cat, catIdx) => {
+                    const itemIdx = cat.items.indexOf(plan);
+                    if (itemIdx !== -1) {
+                        const checkbox = document.getElementById(`plan-${catIdx}-${itemIdx}`);
+                        if (checkbox) {
+                            checkbox.closest('.checkbox-item').classList.add('selected');
+                        }
+                    }
+                });
+            });
+        }
+        
+        function renderContactCheckboxes() {
+            const company = getCurrentCompany();
+            const container = document.getElementById('contactCheckboxes');
+            if (!company) {
+                container.innerHTML = '';
+                return;
+            }
+            container.innerHTML = company.contacts.map((contact, index) => `
+                <div class="checkbox-item" data-type="contact" data-index="${index}">
+                    <input type="checkbox" id="contact-${index}" onchange="togglePreset('contacts', ${index})"
+                           ${data.selected.contacts.includes(index) ? 'checked' : ''}>
+                    <label for="contact-${index}">${contact}</label>
+                </div>
+            `).join('');
+            
+            renderCustomItems('contacts');
+        }
+        
+        function renderContentCategoryTabs() {
+            const container = document.getElementById('contentCategoryTabs');
+            container.innerHTML = data.contentCategories.map((cat, index) => `
+                <div class="category-tab ${index === data.currentContentCategory ? 'active' : ''}" 
+                     onclick="switchContentCategory(${index})">
+                    ${cat.name}
+                </div>
+            `).join('');
+        }
+        
+        function switchContentCategory(index) {
+            data.currentContentCategory = index;
+            renderContentCategoryTabs();
+            renderContentCheckboxes();
+            updateAllCheckboxStyles();
+        }
+        
+        function renderContentCheckboxes() {
+            const container = document.getElementById('contentCheckboxesContainer');
+            const category = data.contentCategories[data.currentContentCategory];
+            
+            if (!category) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let html = `<div class="content-category">
+                <h5>${category.name} - 沟通内容</h5>
+                <div class="checkbox-group">`;
+            
+            category.items.forEach((item, index) => {
+                const globalIndex = getGlobalContentIndex(data.currentContentCategory, index);
+                html += `
+                    <div class="checkbox-item" data-type="content" data-index="${globalIndex}">
+                        <input type="checkbox" id="content-${globalIndex}" 
+                               onchange="toggleContent(${data.currentContentCategory}, ${index})"
+                               ${data.selected.contents.includes(globalIndex) ? 'checked' : ''}>
+                        <label for="content-${globalIndex}">${item}</label>
+                    </div>
+                `;
+            });
+            
+            html += '</div></div>';
+            container.innerHTML = html;
+            
+            data.selected.contents.forEach(idx => {
+                updateCheckboxStyle('contents', idx);
+            });
+        }
+        
+        function getGlobalContentIndex(categoryIndex, itemIndex) {
+            let globalIndex = 0;
+            for (let i = 0; i < categoryIndex; i++) {
+                globalIndex += data.contentCategories[i].items.length;
+            }
+            return globalIndex + itemIndex;
+        }
+        
+        function getCategoryAndItemFromGlobalIndex(globalIndex) {
+            let currentIndex = 0;
+            for (let catIdx = 0; catIdx < data.contentCategories.length; catIdx++) {
+                const cat = data.contentCategories[catIdx];
+                if (globalIndex < currentIndex + cat.items.length) {
+                    return { categoryIndex: catIdx, itemIndex: globalIndex - currentIndex };
+                }
+                currentIndex += cat.items.length;
+            }
+            return null;
+        }
+        
+        function toggleContent(categoryIndex, itemIndex) {
+            const globalIndex = getGlobalContentIndex(categoryIndex, itemIndex);
+            const arr = data.selected.contents;
+            const idx = arr.indexOf(globalIndex);
+            if (idx > -1) {
+                arr.splice(idx, 1);
+            } else {
+                arr.push(globalIndex);
+            }
+            updateCheckboxStyle('contents', globalIndex);
+        }
+        
+        function renderNoteCheckboxes() {
+            const container = document.getElementById('noteCheckboxes');
+            const category = data.noteCategories[data.currentNoteCategory];
+            
+            if (!category || category.items.length === 0) {
+                container.innerHTML = '<p style="color: #718096; padding: 10px;">该分类下暂无注意事项</p>';
+                renderCustomItems('notes');
+                return;
+            }
+            
+            container.innerHTML = category.items.map((note, index) => `
+                <div class="checkbox-item" data-type="note" data-category="${data.currentNoteCategory}" data-index="${index}">
+                    <input type="checkbox" id="note-${data.currentNoteCategory}-${index}" onchange="toggleNotePreset(${data.currentNoteCategory}, ${index})"
+                           ${data.selected.notes.includes(note) ? 'checked' : ''}>
+                    <label for="note-${data.currentNoteCategory}-${index}">${note}</label>
+                </div>
+            `).join('');
+            
+            renderCustomItems('notes');
+        }
+        
+        function toggleNotePreset(categoryIndex, itemIndex) {
+            const category = data.noteCategories[categoryIndex];
+            const item = category.items[itemIndex];
+            const checkbox = document.getElementById(`note-${categoryIndex}-${itemIndex}`);
+            const checkboxItem = checkbox.parentElement;
+            
+            if (checkbox.checked) {
+                if (!data.selected.notes.includes(item)) {
+                    data.selected.notes.push(item);
+                }
+                checkboxItem.classList.add('selected');
+            } else {
+                data.selected.notes = data.selected.notes.filter(n => n !== item);
+                checkboxItem.classList.remove('selected');
+            }
+        }
+        
+        function renderNoteCategoryTabs() {
+            const container = document.getElementById('noteCategoryTabs');
+            if (!container) return;
+            
+            container.innerHTML = data.noteCategories.map((cat, index) => `
+                <button class="tab ${index === data.currentNoteCategory ? 'active' : ''}" 
+                        onclick="switchNoteCategory(${index})" type="button">
+                    ${cat.name} (${cat.items.length})
+                </button>
+            `).join('');
+        }
+        
+        function switchNoteCategory(index) {
+            data.currentNoteCategory = index;
+            renderNoteCategoryTabs();
+            renderNoteCheckboxes();
+            updateAllCheckboxStyles();
+        }
+        
+        function renderPlanCategoryTabs() {
+            const container = document.getElementById('planCategoryTabs');
+            if (!container) return;
+            
+            container.innerHTML = data.planCategories.map((cat, index) => `
+                <button class="tab ${index === data.currentPlanCategory ? 'active' : ''}" 
+                        onclick="switchPlanCategory(${index})" type="button">
+                    ${cat.name} (${cat.items.length})
+                </button>
+            `).join('');
+        }
+        
+        function switchPlanCategory(index) {
+            data.currentPlanCategory = index;
+            renderPlanCategoryTabs();
+            renderPlanCheckboxes();
+            updateAllCheckboxStyles();
+        }
+        
+        function renderPlanCheckboxes() {
+            const container = document.getElementById('planCheckboxes');
+            const category = data.planCategories[data.currentPlanCategory];
+            
+            if (!category || category.items.length === 0) {
+                container.innerHTML = '<p style="color: #718096; padding: 10px;">该分类下暂无计划</p>';
+                renderCustomItems('plans');
+                return;
+            }
+            
+            container.innerHTML = category.items.map((plan, index) => `
+                <div class="checkbox-item" data-type="plan" data-category="${data.currentPlanCategory}" data-index="${index}">
+                    <input type="checkbox" id="plan-${data.currentPlanCategory}-${index}" onchange="togglePlanPreset(${data.currentPlanCategory}, ${index})"
+                           ${data.selected.plans.includes(plan) ? 'checked' : ''}>
+                    <label for="plan-${data.currentPlanCategory}-${index}">${plan}</label>
+                </div>
+            `).join('');
+            
+            renderCustomItems('plans');
+        }
+        
+        function togglePlanPreset(categoryIndex, itemIndex) {
+            const category = data.planCategories[categoryIndex];
+            const item = category.items[itemIndex];
+            const checkbox = document.getElementById(`plan-${categoryIndex}-${itemIndex}`);
+            const checkboxItem = checkbox.parentElement;
+            
+            if (checkbox.checked) {
+                if (!data.selected.plans.includes(item)) {
+                    data.selected.plans.push(item);
+                }
+                checkboxItem.classList.add('selected');
+            } else {
+                data.selected.plans = data.selected.plans.filter(p => p !== item);
+                checkboxItem.classList.remove('selected');
+            }
+        }
+        
+        function addPlan() {
+            const input = document.getElementById('newPlan');
+            const value = input.value.trim();
+            if (value) {
+                data.custom.plans.push(value);
+                input.value = '';
+                renderCustomItems('plans');
+            }
+        }
+        
+        function togglePreset(type, index) {
+            const arr = data.selected[type];
+            const idx = arr.indexOf(index);
+            if (idx > -1) {
+                arr.splice(idx, 1);
+            } else {
+                arr.push(index);
+            }
+            updateCheckboxStyle(type, index);
+        }
+        
+        function updateCheckboxStyle(type, index) {
+            const checkbox = document.getElementById(`${type.slice(0, -1)}-${index}`);
+            if (!checkbox) return;
+            const item = checkbox.closest('.checkbox-item');
+            if (data.selected[type].includes(index)) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        }
+        
+        function addContact() {
+            const input = document.getElementById('newContact');
+            const value = input.value.trim();
+            if (value) {
+                data.custom.contacts.push(value);
+                input.value = '';
+                renderCustomItems('contacts');
+            }
+        }
+        
+        function addContent() {
+            const input = document.getElementById('newContent');
+            const value = input.value.trim();
+            if (value) {
+                data.custom.contents.push(value);
+                input.value = '';
+                renderCustomItems('contents');
+            }
+        }
+        
+        function addNote() {
+            const input = document.getElementById('newNote');
+            const value = input.value.trim();
+            if (value) {
+                data.custom.notes.push(value);
+                input.value = '';
+                renderCustomItems('notes');
+            }
+        }
+        
+        function renderCustomItems(type) {
+            const container = document.getElementById(`custom${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            container.innerHTML = data.custom[type].map((item, index) => `
+                <div class="custom-item">
+                    <span>${item}</span>
+                    <button class="btn btn-danger btn-sm" onclick="removeCustom('${type}', ${index})">删除</button>
+                </div>
+            `).join('');
+        }
+        
+        function removeCustom(type, index) {
+            data.custom[type].splice(index, 1);
+            renderCustomItems(type);
+        }
+        
+        function generateSummary() {
+            const company = getCurrentCompany();
+            const companyName = company ? company.name : 'xxx家具';
+            const meetingDate = document.getElementById('meetingDate').value;
+            
+            if (!meetingDate) {
+                alert('请选择沟通日期！');
+                return;
+            }
+            
+            const dateObj = new Date(meetingDate);
+            const year = dateObj.getFullYear();
+            const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+            const day = dateObj.getDate().toString().padStart(2, '0');
+            const formattedDate = `${year}年${month}月${day}日`;
+            
+            const companyContacts = company ? company.contacts : [];
+            const selectedContacts = [
+                ...data.selected.contacts.map(i => companyContacts[i]),
+                ...data.custom.contacts
+            ].filter(c => c);
+            
+            const selectedContents = [];
+            data.selected.contents.forEach(globalIdx => {
+                const pos = getCategoryAndItemFromGlobalIndex(globalIdx);
+                if (pos) {
+                    selectedContents.push(data.contentCategories[pos.categoryIndex].items[pos.itemIndex]);
+                }
+            });
+            selectedContents.push(...data.custom.contents);
+            
+            const selectedNotes = [
+                ...data.selected.notes,
+                ...data.custom.notes
+            ].filter(c => c);
+            
+            const selectedPlans = [
+                ...data.selected.plans,
+                ...data.custom.plans
+            ].filter(c => c);
+            
+            let summary = `${companyName}${formattedDate}沟通总结\n\n`;
+            
+            const chineseNumbers = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+            let sectionNumber = 0;
+            
+            if (selectedContacts.length > 0) {
+                summary += `${chineseNumbers[sectionNumber]}、【沟通对象】：${selectedContacts.join('、')}\n\n`;
+                sectionNumber++;
+            }
+            
+            if (selectedContents.length > 0) {
+                summary += `${chineseNumbers[sectionNumber]}、【沟通内容】\n`;
+                selectedContents.forEach((content, i) => {
+                    summary += `${i + 1}、${content}\n`;
+                });
+                summary += `\n`;
+                sectionNumber++;
+            }
+            
+            if (selectedNotes.length > 0) {
+                summary += `${chineseNumbers[sectionNumber]}、【注意事项】\n`;
+                selectedNotes.forEach((note, i) => {
+                    summary += `${i + 1}、${note}\n`;
+                });
+                summary += `\n`;
+                sectionNumber++;
+            }
+            
+            if (selectedPlans.length > 0) {
+                summary += `${chineseNumbers[sectionNumber]}、【下一步计划】\n`;
+                selectedPlans.forEach((plan, i) => {
+                    summary += `${i + 1}、${plan}\n`;
+                });
+                summary += `\n`;
+            }
+            
+            summary += `注：在过程中有不清楚的地方随时与我们联系`;
+            
+            document.getElementById('summaryOutput').textContent = summary;
+        }
+        
+        function copySummary() {
+            const summary = document.getElementById('summaryOutput').textContent;
+            if (summary === '请先填写信息并点击"生成总结"按钮...') {
+                alert('请先生成总结！');
+                return;
+            }
+            navigator.clipboard.writeText(summary).then(() => {
+                alert('已复制到剪贴板！');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = summary;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('已复制到剪贴板！');
+            });
+        }
+        
+        function saveSummary() {
+            const summary = document.getElementById('summaryOutput').textContent;
+            if (summary === '请先填写信息并点击"生成总结"按钮...') {
+                alert('请先生成总结！');
+                return;
+            }
+            
+            const company = getCurrentCompany();
+            
+            const record = {
+                id: data.editingHistoryId || Date.now(),
+                date: data.editingHistoryId ? data.history.find(r => r.id === data.editingHistoryId)?.date : new Date().toISOString(),
+                companyName: company ? company.name : '',
+                meetingDate: document.getElementById('meetingDate').value,
+                summary: summary,
+                selectedContacts: [...data.selected.contacts],
+                selectedContents: [...data.selected.contents],
+                selectedNotes: [...data.selected.notes],
+                selectedPlans: [...data.selected.plans],
+                customContacts: [...data.custom.contacts],
+                customContents: [...data.custom.contents],
+                customNotes: [...data.custom.notes],
+                customPlans: [...data.custom.plans]
+            };
+            
+            if (data.editingHistoryId) {
+                const index = data.history.findIndex(r => r.id === data.editingHistoryId);
+                if (index !== -1) {
+                    data.history[index] = record;
+                }
+                data.editingHistoryId = null;
+                alert('更新成功！');
+            } else {
+                data.history.unshift(record);
+                alert('保存成功！');
+            }
+            
+            saveData();
+            renderHistory();
+        }
+        
+        function renderFilterCompanySelect() {
+            const select = document.getElementById('filterCompany');
+            const currentValue = select.value;
+            select.innerHTML = '<option value="">全部公司</option>' + 
+                data.companies.map((company) => 
+                    `<option value="${company.name}">${company.name}</option>`
+                ).join('');
+            select.value = currentValue;
+        }
+        
+        function getFilteredHistory() {
+            const companyFilter = document.getElementById('filterCompany').value;
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const contentFilter = document.getElementById('filterContent').value.toLowerCase();
+            const notesFilter = document.getElementById('filterNotes').value.toLowerCase();
+            
+            return data.history.filter(record => {
+                // 公司筛选
+                if (companyFilter && record.companyName !== companyFilter) {
+                    return false;
+                }
+                
+                // 日期范围筛选
+                if (startDate && record.meetingDate < startDate) {
+                    return false;
+                }
+                if (endDate && record.meetingDate > endDate) {
+                    return false;
+                }
+                
+                // 沟通内容模糊搜索
+                if (contentFilter) {
+                    const summaryLower = record.summary.toLowerCase();
+                    // 提取沟通内容部分（二、【沟通内容】到三、【注意事项】之间）
+                    const contentMatch = summaryLower.match(/二、【沟通内容】([\s\S]*?)(?=三、【注意事项】)/);
+                    if (contentMatch) {
+                        if (!contentMatch[1].includes(contentFilter)) {
+                            return false;
+                        }
+                    } else if (!summaryLower.includes(contentFilter)) {
+                        return false;
+                    }
+                }
+                
+                // 注意事项模糊搜索
+                if (notesFilter) {
+                    const summaryLower = record.summary.toLowerCase();
+                    // 提取注意事项部分（三、【注意事项】到注：之间）
+                    const notesMatch = summaryLower.match(/三、【注意事项】([\s\S]*?)(?=注：)/);
+                    if (notesMatch) {
+                        if (!notesMatch[1].includes(notesFilter)) {
+                            return false;
+                        }
+                    } else if (!summaryLower.includes(notesFilter)) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+        }
+        
+        function applyFilters() {
+            renderHistory();
+        }
+        
+        function resetFilters() {
+            document.getElementById('filterCompany').value = '';
+            document.getElementById('filterStartDate').value = '';
+            document.getElementById('filterEndDate').value = '';
+            document.getElementById('filterContent').value = '';
+            document.getElementById('filterNotes').value = '';
+            renderHistory();
+        }
+        
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            const filteredHistory = getFilteredHistory();
+            
+            if (filteredHistory.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #718096; margin: 20px 0;">暂无符合条件的记录</p>';
+                return;
+            }
+            
+            container.innerHTML = filteredHistory.map(record => {
+                const saveDate = new Date(record.date);
+                const formattedSaveDate = `${saveDate.getFullYear()}-${(saveDate.getMonth() + 1).toString().padStart(2, '0')}-${saveDate.getDate().toString().padStart(2, '0')}`;
+                const preview = record.summary.substring(0, 100) + '...';
+                
+                return `
+                    <div class="history-item">
+                        <div class="history-header">
+                            <span class="history-title">${record.companyName} - ${record.meetingDate}</span>
+                            <span class="history-date">保存于：${formattedSaveDate}</span>
+                        </div>
+                        <div class="history-preview">${preview}</div>
+                        <div class="history-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="loadSummary(${record.id})" type="button">📝 编辑</button>
+                            <button class="btn btn-success btn-sm" onclick="copyHistorySummary(${record.id})" type="button">📋 复制</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteHistory(${record.id})" type="button">🗑️ 删除</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function loadSummary(id) {
+            const record = data.history.find(r => r.id === id);
+            if (record) {
+                const companyIndex = data.companies.findIndex(c => c.name === record.companyName);
+                if (companyIndex !== -1) {
+                    document.getElementById('companySelect').value = companyIndex;
+                }
+                document.getElementById('meetingDate').value = record.meetingDate;
+                document.getElementById('summaryOutput').textContent = record.summary;
+                
+                data.custom = {
+                    contacts: record.customContacts || [],
+                    contents: record.customContents || [],
+                    notes: record.customNotes || [],
+                    plans: record.customPlans || []
+                };
+                
+                data.selected = {
+                    contacts: record.selectedContacts || [],
+                    contents: [],
+                    notes: record.selectedNotes || [],
+                    plans: record.selectedPlans || []
+                };
+                
+                if (record.selectedContents && record.selectedContents.length > 0) {
+                    record.selectedContents.forEach(globalIdx => {
+                        const pos = getCategoryAndItemFromGlobalIndex(globalIdx);
+                        if (pos) {
+                            const item = data.contentCategories[pos.categoryIndex].items[pos.itemIndex];
+                            if (item) {
+                                data.selected.contents.push(globalIdx);
+                            }
+                        }
+                    });
+                }
+                
+                data.editingHistoryId = id;
+                updateSaveButton();
+                renderCheckboxes();
+                switchTab('generate');
+            }
+        }
+        
+        function cancelEdit() {
+            data.editingHistoryId = null;
+            updateSaveButton();
+            resetForm();
+        }
+        
+        function updateSaveButton() {
+            const saveButton = document.getElementById('saveButton');
+            const cancelButton = document.getElementById('cancelEditButton');
+            if (data.editingHistoryId) {
+                saveButton.textContent = '💾 更新记录';
+                cancelButton.style.display = 'inline-block';
+            } else {
+                saveButton.textContent = '💾 保存到历史';
+                cancelButton.style.display = 'none';
+            }
+        }
+        
+        function copyHistorySummary(id) {
+            const record = data.history.find(r => r.id === id);
+            if (record) {
+                navigator.clipboard.writeText(record.summary).then(() => {
+                    alert('已复制到剪贴板！');
+                });
+            }
+        }
+        
+        function deleteHistory(id) {
+            if (confirm('确定要删除这条记录吗？')) {
+                data.history = data.history.filter(r => r.id !== id);
+                saveData();
+                renderHistory();
+            }
+        }
+        
+        function clearHistory() {
+            if (confirm('确定要清空所有历史记录吗？此操作不可恢复！')) {
+                data.history = [];
+                saveData();
+                renderHistory();
+            }
+        }
+        
+        function renderCompanyList() {
+            const container = document.getElementById('companyList');
+            if (!container) return;
+            container.innerHTML = data.companies.map((company, index) => `
+                <div class="company-item">
+                    <div class="company-name">${company.name}</div>
+                    <div class="company-contacts">沟通对象：${company.contacts.join('、')}</div>
+                    <button class="btn btn-secondary btn-sm" onclick="editCompany(${index})" type="button">编辑</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteCompanyDirect(${index})" type="button">删除</button>
+                </div>
+            `).join('');
+        }
+        
+        function deleteCompanyDirect(index) {
+            if (data.companies.length <= 1) {
+                alert('至少需要保留一个公司！');
+                return;
+            }
+            if (confirm('确定要删除这个公司吗？')) {
+                data.companies.splice(index, 1);
+                saveData();
+                renderCompanyList();
+                renderCompanySelect();
+                renderFilterCompanySelect();
+                renderCheckboxes();
+            }
+        }
+        
+        function addCompany() {
+            const input = document.getElementById('newCompanyInput');
+            const name = input.value.trim();
+            if (name && !data.companies.find(c => c.name === name)) {
+                data.companies.push({
+                    name: name,
+                    contacts: []
+                });
+                saveData();
+                input.value = '';
+                renderCompanyList();
+                renderCompanySelect();
+                renderFilterCompanySelect();
+            }
+        }
+        
+        function editCompany(index) {
+            data.currentEditingCompany = index;
+            const company = data.companies[index];
+            document.getElementById('editCompanyName').value = company.name;
+            document.getElementById('editCompanyContacts').value = company.contacts.join('\n');
+            document.getElementById('companySettings').style.display = 'block';
+        }
+        
+        function saveCompanySettings() {
+            if (data.currentEditingCompany === null) return;
+            
+            const name = document.getElementById('editCompanyName').value.trim();
+            const contactsText = document.getElementById('editCompanyContacts').value;
+            const contacts = contactsText.split('\n').map(c => c.trim()).filter(c => c);
+            
+            if (name) {
+                data.companies[data.currentEditingCompany] = { name, contacts };
+                saveData();
+                renderCompanyList();
+                renderCompanySelect();
+                renderFilterCompanySelect();
+                renderCheckboxes();
+                document.getElementById('companySettings').style.display = 'none';
+                data.currentEditingCompany = null;
+                alert('保存成功！');
+            }
+        }
+        
+        function deleteCurrentCompany() {
+            if (data.currentEditingCompany === null) return;
+            if (data.companies.length <= 1) {
+                alert('至少需要保留一个公司！');
+                return;
+            }
+            if (confirm('确定要删除这个公司吗？')) {
+                data.companies.splice(data.currentEditingCompany, 1);
+                saveData();
+                renderCompanyList();
+                renderCompanySelect();
+                renderFilterCompanySelect();
+                renderCheckboxes();
+                document.getElementById('companySettings').style.display = 'none';
+                data.currentEditingCompany = null;
+            }
+        }
+        
+        function renderContentCategories() {
+            const container = document.getElementById('contentCategoryList');
+            if (!container) return;
+            container.innerHTML = data.contentCategories.map((cat, index) => `
+                <div class="category-item">
+                    <div class="category-title">${cat.name}</div>
+                    <div class="content-count">${cat.items.length} 个内容</div>
+                    <button class="btn btn-secondary btn-sm" onclick="editContentCategory(${index})" type="button">编辑</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteContentCategoryDirect(${index})" type="button">删除</button>
+                </div>
+            `).join('');
+        }
+        
+        function deleteContentCategoryDirect(index) {
+            if (data.contentCategories.length <= 1) {
+                alert('至少需要保留一个分类！');
+                return;
+            }
+            if (confirm('确定要删除这个分类吗？')) {
+                data.contentCategories.splice(index, 1);
+                if (data.currentContentCategory >= data.contentCategories.length) {
+                    data.currentContentCategory = 0;
+                }
+                saveData();
+                renderContentCategories();
+                renderContentCategoryTabs();
+                renderContentCheckboxes();
+            }
+        }
+        
+        function addContentCategory() {
+            const input = document.getElementById('newCategoryInput');
+            const name = input.value.trim();
+            if (name && !data.contentCategories.find(c => c.name === name)) {
+                data.contentCategories.push({
+                    name: name,
+                    items: []
+                });
+                saveData();
+                input.value = '';
+                renderContentCategories();
+                renderContentCategoryTabs();
+            }
+        }
+        
+        function editContentCategory(index) {
+            data.currentEditingCategory = index;
+            const category = data.contentCategories[index];
+            document.getElementById('editCategoryName').value = category.name;
+            document.getElementById('editCategoryContents').value = category.items.join('\n');
+            document.getElementById('categorySettings').style.display = 'block';
+        }
+        
+        function saveCategorySettings() {
+            if (data.currentEditingCategory === null) return;
+            
+            const name = document.getElementById('editCategoryName').value.trim();
+            const contentsText = document.getElementById('editCategoryContents').value;
+            const items = contentsText.split('\n').map(c => c.trim()).filter(c => c);
+            
+            if (name) {
+                data.contentCategories[data.currentEditingCategory] = { name, items };
+                saveData();
+                renderContentCategories();
+                renderContentCategoryTabs();
+                renderContentCheckboxes();
+                document.getElementById('categorySettings').style.display = 'none';
+                data.currentEditingCategory = null;
+                alert('保存成功！');
+            }
+        }
+        
+        function deleteCurrentCategory() {
+            if (data.currentEditingCategory === null) return;
+            if (data.contentCategories.length <= 1) {
+                alert('至少需要保留一个分类！');
+                return;
+            }
+            if (confirm('确定要删除这个分类吗？')) {
+                data.contentCategories.splice(data.currentEditingCategory, 1);
+                if (data.currentContentCategory >= data.contentCategories.length) {
+                    data.currentContentCategory = 0;
+                }
+                saveData();
+                renderContentCategories();
+                renderContentCategoryTabs();
+                renderContentCheckboxes();
+                document.getElementById('categorySettings').style.display = 'none';
+                data.currentEditingCategory = null;
+            }
+        }
+        
+        function renderPresets() {
+            renderNoteCategoryList();
+            renderPlanCategoryList();
+        }
+        
+        function renderPlanCategoryList() {
+            const container = document.getElementById('planCategoryList');
+            if (!container) return;
+            container.innerHTML = data.planCategories.map((cat, index) => `
+                <div class="category-item">
+                    <div class="category-title">${cat.name}</div>
+                    <div class="content-count">${cat.items.length} 个计划</div>
+                    <button class="btn btn-secondary btn-sm" onclick="editPlanCategory(${index})" type="button">编辑</button>
+                    <button class="btn btn-danger btn-sm" onclick="deletePlanCategoryDirect(${index})" type="button">删除</button>
+                </div>
+            `).join('');
+        }
+        
+        function addPlanCategory() {
+            const input = document.getElementById('newPlanCategoryInput');
+            const name = input.value.trim();
+            if (name && !data.planCategories.find(c => c.name === name)) {
+                data.planCategories.push({
+                    name: name,
+                    items: []
+                });
+                saveData();
+                input.value = '';
+                renderPlanCategoryList();
+                renderPlanCategoryTabs();
+            }
+        }
+        
+        function editPlanCategory(index) {
+            data.currentEditingPlanCategory = index;
+            const category = data.planCategories[index];
+            document.getElementById('editPlanCategoryName').value = category.name;
+            document.getElementById('editPlanCategoryContents').value = category.items.join('\n');
+            document.getElementById('planCategorySettings').style.display = 'block';
+        }
+        
+        function savePlanCategorySettings() {
+            if (data.currentEditingPlanCategory === null) return;
+            
+            const name = document.getElementById('editPlanCategoryName').value.trim();
+            const contentsText = document.getElementById('editPlanCategoryContents').value;
+            const items = contentsText.split('\n').map(c => c.trim()).filter(c => c);
+            
+            if (name) {
+                data.planCategories[data.currentEditingPlanCategory] = { name, items };
+                saveData();
+                renderPlanCategoryList();
+                renderPlanCategoryTabs();
+                renderPlanCheckboxes();
+                document.getElementById('planCategorySettings').style.display = 'none';
+                data.currentEditingPlanCategory = null;
+                alert('保存成功！');
+            }
+        }
+        
+        function deleteCurrentPlanCategory() {
+            if (data.currentEditingPlanCategory === null) return;
+            if (data.planCategories.length <= 1) {
+                alert('至少需要保留一个分类！');
+                return;
+            }
+            if (confirm('确定要删除这个分类吗？')) {
+                data.planCategories.splice(data.currentEditingPlanCategory, 1);
+                if (data.currentPlanCategory >= data.planCategories.length) {
+                    data.currentPlanCategory = 0;
+                }
+                saveData();
+                renderPlanCategoryList();
+                renderPlanCategoryTabs();
+                renderPlanCheckboxes();
+                document.getElementById('planCategorySettings').style.display = 'none';
+                data.currentEditingPlanCategory = null;
+            }
+        }
+        
+        function deletePlanCategoryDirect(index) {
+            if (data.planCategories.length <= 1) {
+                alert('至少需要保留一个分类！');
+                return;
+            }
+            if (confirm('确定要删除这个分类吗？')) {
+                data.planCategories.splice(index, 1);
+                if (data.currentPlanCategory >= data.planCategories.length) {
+                    data.currentPlanCategory = 0;
+                }
+                saveData();
+                renderPlanCategoryList();
+                renderPlanCategoryTabs();
+                renderPlanCheckboxes();
+            }
+        }
+        
+        
+        function renderNoteCategoryList() {
+            const container = document.getElementById('noteCategoryList');
+            if (!container) return;
+            container.innerHTML = data.noteCategories.map((cat, index) => `
+                <div class="category-item">
+                    <div class="category-title">${cat.name}</div>
+                    <div class="content-count">${cat.items.length} 个注意事项</div>
+                    <button class="btn btn-secondary btn-sm" onclick="editNoteCategory(${index})" type="button">编辑</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteNoteCategoryDirect(${index})" type="button">删除</button>
+                </div>
+            `).join('');
+        }
+        
+        function addNoteCategory() {
+            const input = document.getElementById('newNoteCategoryInput');
+            const name = input.value.trim();
+            if (name && !data.noteCategories.find(c => c.name === name)) {
+                data.noteCategories.push({
+                    name: name,
+                    items: []
+                });
+                saveData();
+                input.value = '';
+                renderNoteCategoryList();
+                renderNoteCategoryTabs();
+            }
+        }
+        
+        function editNoteCategory(index) {
+            data.currentEditingNoteCategory = index;
+            const category = data.noteCategories[index];
+            document.getElementById('editNoteCategoryName').value = category.name;
+            document.getElementById('editNoteCategoryContents').value = category.items.join('\n');
+            document.getElementById('noteCategorySettings').style.display = 'block';
+        }
+        
+        function saveNoteCategorySettings() {
+            if (data.currentEditingNoteCategory === null) return;
+            
+            const name = document.getElementById('editNoteCategoryName').value.trim();
+            const contentsText = document.getElementById('editNoteCategoryContents').value;
+            const items = contentsText.split('\n').map(c => c.trim()).filter(c => c);
+            
+            if (name) {
+                data.noteCategories[data.currentEditingNoteCategory] = { name, items };
+                saveData();
+                renderNoteCategoryList();
+                renderNoteCategoryTabs();
+                renderNoteCheckboxes();
+                document.getElementById('noteCategorySettings').style.display = 'none';
+                data.currentEditingNoteCategory = null;
+                alert('保存成功！');
+            }
+        }
+        
+        function deleteCurrentNoteCategory() {
+            if (data.currentEditingNoteCategory === null) return;
+            if (data.noteCategories.length <= 1) {
+                alert('至少需要保留一个分类！');
+                return;
+            }
+            if (confirm('确定要删除这个分类吗？')) {
+                data.noteCategories.splice(data.currentEditingNoteCategory, 1);
+                if (data.currentNoteCategory >= data.noteCategories.length) {
+                    data.currentNoteCategory = 0;
+                }
+                saveData();
+                renderNoteCategoryList();
+                renderNoteCategoryTabs();
+                renderNoteCheckboxes();
+                document.getElementById('noteCategorySettings').style.display = 'none';
+                data.currentEditingNoteCategory = null;
+            }
+        }
+        
+        function deleteNoteCategoryDirect(index) {
+            if (data.noteCategories.length <= 1) {
+                alert('至少需要保留一个分类！');
+                return;
+            }
+            if (confirm('确定要删除这个分类吗？')) {
+                data.noteCategories.splice(index, 1);
+                if (data.currentNoteCategory >= data.noteCategories.length) {
+                    data.currentNoteCategory = 0;
+                }
+                saveData();
+                renderNoteCategoryList();
+                renderNoteCategoryTabs();
+                renderNoteCheckboxes();
+            }
+        }
+        
+
+        function resetPresets() {
+            if (confirm('确定要恢复默认预设吗？所有自定义预设将被删除！')) {
+                data.companies = [
+                    {
+                        name: 'xxx家具',
+                        contacts: ['周总', '廖总', '小马', '财务']
+                    },
+                    {
+                        name: 'ABC建材',
+                        contacts: ['李总', '王经理', '张工', '刘会计']
+                    }
+                ];
+                data.contentCategories = [
+                    {
+                        name: '销售',
+                        items: ['销售出库问题处理', '订单跟进', '价格调整讨论', '客户投诉处理']
+                    },
+                    {
+                        name: '采购',
+                        items: ['采购流程沟通', '供应商对接', '采购价格谈判', '采购订单跟进']
+                    },
+                    {
+                        name: '仓库',
+                        items: ['库存盘点', '出入库流程', '库存预警设置', '仓库布局调整']
+                    },
+                    {
+                        name: '财务',
+                        items: ['财务报表核对', '付款审批流程', '费用报销规范', '成本核算']
+                    },
+                    {
+                        name: '会计',
+                        items: ['账务处理规范', '凭证录入', '科目设置', '月末结账']
+                    },
+                    {
+                        name: '生产',
+                        items: ['生产流程沟通', '生产设置调整', '生产计划安排', '产能分析']
+                    },
+                    {
+                        name: '条码',
+                        items: ['条码打印模板调整', '扫码流程培训', '条码规则设置', '标签设计']
+                    },
+                    {
+                        name: '系统',
+                        items: ['系统功能培训', '权限设置', '数据备份', '系统升级']
+                    },
+                    {
+                        name: '其他',
+                        items: ['培训新文员生产下单操作', '白胚资料建立讲解', '质量问题反馈', '其他事项']
+                    }
+                ];
+                data.notes = [
+                    '下生产时需要注意床边尾木架白胚单独下生产走一条线，会备货，生成方式是按单品',
+                    '目前车位的床边尾，床头柜的单价是与床头合在一起了，建议后面需要单独出单价来，方便核算和管理',
+                    '交货日期需要提前3天确认',
+                    '特殊规格需要提前报备'
+                ];
+                data.noteCategories = [
+                    {
+                        name: '常见',
+                        items: [
+                            '下生产时需要注意床边尾木架白胚单独下生产走一条线，会备货，生成方式是按单品',
+                            '目前车位的床边尾，床头柜的单价是与床头合在一起了，建议后面需要单独出单价来，方便核算和管理',
+                            '交货日期需要提前3天确认'
+                        ]
+                    },
+                    {
+                        name: '特殊',
+                        items: [
+                            '特殊规格需要提前报备',
+                            '定制产品需要确认图纸',
+                            '特殊材质需要额外确认'
+                        ]
+                    },
+                    {
+                        name: '要求',
+                        items: [
+                            '所有产品需要经过质检',
+                            '包装需要符合运输要求',
+                            '交付时需要提供相关证明文件'
+                        ]
+                    }
+                ];
+                data.planCategories = [
+                    {
+                        name: '短期',
+                        items: [
+                            '完成生产流程优化',
+                            '更新系统权限设置',
+                            '培训新员工'
+                        ]
+                    },
+                    {
+                        name: '中期',
+                        items: [
+                            '实施新的质检标准',
+                            '优化仓库管理流程',
+                            '升级系统功能'
+                        ]
+                    },
+                    {
+                        name: '长期',
+                        items: [
+                            '建立完整的管理体系',
+                            '扩大生产规模',
+                            '开发新产品线'
+                        ]
+                    }
+                ];
+                data.selected = { contacts: [], contents: [], notes: [], plans: [] };
+                data.currentContentCategory = 0;
+                data.currentNoteCategory = 0;
+                data.currentPlanCategory = 0;
+                saveData();
+                renderCompanyList();
+                renderCompanySelect();
+                renderFilterCompanySelect();
+                renderContentCategories();
+                renderContentCategoryTabs();
+                renderContentCheckboxes();
+                renderNoteCategoryList();
+                renderNoteCategoryTabs();
+                renderNoteCheckboxes();
+                renderPlanCategoryList();
+                renderPlanCategoryTabs();
+                renderPlanCheckboxes();
+            }
+        }
+        
+        function resetForm() {
+            setDefaultDate();
+            data.selected = { contacts: [], contents: [], notes: [], plans: [] };
+            data.custom = { contacts: [], contents: [], notes: [], plans: [] };
+            data.currentContentCategory = 0;
+            data.currentNoteCategory = 0;
+            data.currentPlanCategory = 0;
+            data.editingHistoryId = null;
+            updateSaveButton();
+            document.getElementById('summaryOutput').textContent = '请先填写信息并点击"生成总结"按钮...';
+            renderContentCategoryTabs();
+            renderNoteCategoryTabs();
+            renderPlanCategoryTabs();
+            renderCheckboxes();
+        }
+        
+        function exportData() {
+            const exportObj = {
+                companies: data.companies,
+                contentCategories: data.contentCategories,
+                noteCategories: data.noteCategories,
+                planCategories: data.planCategories,
+                history: data.history,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(exportObj, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const date = new Date();
+            const dateStr = `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}`;
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `沟通总结数据备份_${dateStr}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('数据导出成功！');
+        }
+        
+        function importData() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('请先选择要导入的JSON文件！');
+                return;
+            }
+            
+            if (!confirm('导入数据将覆盖当前所有数据，确定要继续吗？')) {
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    
+                    // 验证数据结构
+                    if (!imported.companies || !imported.contentCategories) {
+                        alert('导入的文件格式不正确！');
+                        return;
+                    }
+                    
+                    // 导入数据
+                    data.companies = imported.companies || data.companies;
+                    data.contentCategories = imported.contentCategories || data.contentCategories;
+                    data.noteCategories = imported.noteCategories || data.noteCategories;
+                    data.planCategories = imported.planCategories || data.planCategories;
+                    data.history = imported.history || [];
+                    
+                    // 重置选择状态
+                    data.selected = { contacts: [], contents: [], notes: [], plans: [] };
+                    data.custom = { contacts: [], contents: [], notes: [], plans: [] };
+                    data.currentContentCategory = 0;
+                    data.currentNoteCategory = 0;
+                    data.currentPlanCategory = 0;
+                    data.editingHistoryId = null;
+                    
+                    // 保存到本地存储
+                    saveData();
+                    
+                    // 重新渲染界面
+                    renderCompanyList();
+                    renderCompanySelect();
+                    renderFilterCompanySelect();
+                    renderContentCategories();
+                    renderContentCategoryTabs();
+                    renderContentCheckboxes();
+                    renderNoteCategoryList();
+                    renderNoteCategoryTabs();
+                    renderNoteCheckboxes();
+                    renderPlanCategoryList();
+                    renderPlanCategoryTabs();
+                    renderPlanCheckboxes();
+                    renderHistory();
+                    updateSaveButton();
+                    
+                    // 清空文件输入
+                    fileInput.value = '';
+                    
+                    const exportDate = imported.exportDate ? new Date(imported.exportDate).toLocaleString() : '未知时间';
+                    alert(`数据导入成功！\n备份时间：${exportDate}\n历史记录：${data.history.length} 条`);
+                    
+                } catch (error) {
+                    alert('导入失败：文件格式错误或数据损坏！\n错误信息：' + error.message);
+                }
+            };
+            
+            reader.onerror = function() {
+                alert('读取文件失败！');
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function exportHistoryAsTable() {
+            if (data.history.length === 0) {
+                alert('暂无历史记录可导出！');
+                return;
+            }
+            
+            // CSV 表头
+            const headers = ['公司名称', '沟通日期', '保存日期', '沟通对象', '沟通内容', '注意事项', '下一步计划', '完整总结'];
+            
+            // 转换历史记录为 CSV 行
+            const rows = data.history.map(record => {
+                const companyName = record.companyName || '';
+                const meetingDate = record.meetingDate || '';
+                const saveDate = new Date(record.date).toLocaleString('zh-CN');
+                
+                // 提取沟通对象
+                const contacts = [];
+                if (record.selectedContacts && record.selectedContacts.length > 0) {
+                    const company = data.companies.find(c => c.name === companyName);
+                    if (company) {
+                        record.selectedContacts.forEach(idx => {
+                            if (company.contacts[idx]) {
+                                contacts.push(company.contacts[idx]);
+                            }
+                        });
+                    }
+                }
+                if (record.customContacts && record.customContacts.length > 0) {
+                    contacts.push(...record.customContacts);
+                }
+                const contactsStr = contacts.join('、');
+                
+                // 提取沟通内容
+                const contents = [];
+                if (record.selectedContents && record.selectedContents.length > 0) {
+                    record.selectedContents.forEach(globalIdx => {
+                        const pos = getCategoryAndItemFromGlobalIndex(globalIdx);
+                        if (pos && data.contentCategories[pos.categoryIndex]) {
+                            const item = data.contentCategories[pos.categoryIndex].items[pos.itemIndex];
+                            if (item) {
+                                contents.push(item);
+                            }
+                        }
+                    });
+                }
+                if (record.customContents && record.customContents.length > 0) {
+                    contents.push(...record.customContents);
+                }
+                const contentsStr = contents.join('、');
+                
+                // 提取注意事项
+                const notes = [];
+                if (record.selectedNotes && record.selectedNotes.length > 0) {
+                    notes.push(...record.selectedNotes);
+                }
+                if (record.customNotes && record.customNotes.length > 0) {
+                    notes.push(...record.customNotes);
+                }
+                const notesStr = notes.join('、');
+                
+                // 提取下一步计划
+                const plans = [];
+                if (record.selectedPlans && record.selectedPlans.length > 0) {
+                    plans.push(...record.selectedPlans);
+                }
+                if (record.customPlans && record.customPlans.length > 0) {
+                    plans.push(...record.customPlans);
+                }
+                const plansStr = plans.join('、');
+                
+                // 完整总结
+                const summary = record.summary || '';
+                
+                // 转义 CSV 特殊字符
+                const escapeCSV = (str) => {
+                    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                        return '"' + str.replace(/"/g, '""') + '"';
+                    }
+                    return str;
+                };
+                
+                return [
+                    escapeCSV(companyName),
+                    escapeCSV(meetingDate),
+                    escapeCSV(saveDate),
+                    escapeCSV(contactsStr),
+                    escapeCSV(contentsStr),
+                    escapeCSV(notesStr),
+                    escapeCSV(plansStr),
+                    escapeCSV(summary)
+                ].join(',');
+            });
+            
+            // 组合 CSV 内容
+            const csvContent = [
+                headers.join(','),
+                ...rows
+            ].join('\n');
+            
+            // 创建 Blob 并下载
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            
+            const date = new Date();
+            const dateStr = `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}`;
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `沟通总结历史记录_${dateStr}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('表格导出成功！');
+        }
+        
+        // 注册 Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('Service Worker 注册成功:', registration);
+                })
+                .catch(error => {
+                    console.log('Service Worker 注册失败:', error);
+                });
+        }
+        
+        // PWA 安装提示
+        let deferredPrompt;
+        const installButton = document.createElement('button');
+        installButton.id = 'installButton';
+        installButton.className = 'btn btn-primary';
+        installButton.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:1000;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+        installButton.textContent = '📱 安装应用';
+        document.body.appendChild(installButton);
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'block';
+        });
+        
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('用户接受了安装提示');
+                }
+                deferredPrompt = null;
+                installButton.style.display = 'none';
+            }
+        });
+        
+        window.addEventListener('appinstalled', () => {
+            console.log('应用已安装');
+            installButton.style.display = 'none';
+            deferredPrompt = null;
+        });
+        
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
